@@ -1,0 +1,12 @@
+{
+  "name": "developmentpractice",
+  "version": "1.0.0",
+  "description": "",
+  "type":"module",
+  "main": "script.js",
+  "scripts": {
+    "dev": "nodemon script.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
