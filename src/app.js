@@ -11,5 +11,7 @@ app.get(express.json({limit:"16kb",credentials: true}))
 app.get(express.urlencoded({limit:"16kb",extended:true}))
 app.get(express.static("public"))
 app.get(cookieParser())
-
+import  userRouter  from "./routes/user.route.js";
+//routes declaration
+app.use("/api/v1/users",userRouter)
 export { app }
