@@ -1,9 +1,9 @@
-import  {vs as cloudinary} from "cloudinary"
+import  {v2 as cloudinary} from "cloudinary"//change vs
 import fs from "fs"
 cloudinary.config({ 
-    cloud_name:  CLOUD_NAME,
-    api_key:  API_KEY,
-    api_secret: API_SECRET // Click 'View API Keys' above to copy your API secret
+    cloud_name:process.env.CLOUD_NAME,
+    api_key:process.env.API_KEY,
+    api_secret:process.env.API_SECRET // Click 'View API Keys' above to copy your API secret
 });
 const fileUpload=async (localfilepath)=>{
     try {
