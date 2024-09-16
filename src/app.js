@@ -7,10 +7,11 @@ app.use(cors({
     credentials:true
 }
 ))
-app.get(express.json({limit:"16kb",credentials: true}))
-app.get(express.urlencoded({limit:"16kb",extended:true}))
-app.get(express.static("public"))
-app.get(cookieParser())
+app.use(express.json({limit:"16kb"}))
+app.use(express.urlencoded({ extended: true,limit:"16kb" }));
+app.use(express.static("public"))
+app.use(cookieParser())
+//Added
 import  userRouter  from "./routes/user.route.js";
 //routes declaration
 app.use("/api/v1/users",userRouter)
