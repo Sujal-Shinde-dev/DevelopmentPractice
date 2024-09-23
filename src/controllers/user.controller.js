@@ -4,6 +4,7 @@ import { User } from "../models/user.model.js";
 import { fileUpload } from "../utils/cloudinary.js";
 import {ApiResponse} from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken"
+import mongoose from "mongoose";
 const generateAccessTokenAndRefreshToken=async(userId)=>{
     try {
         const user=await User.findById(userId)
@@ -305,4 +306,56 @@ return res
     new ApiResponse(200,channel[0],"User channel fetched successfully")
 )
 })
-export {registerUser,loginUser,logOutUser,refreshAccessToken,changeCurrentPassword,updateAccountDetails,getCurrentUser,updateUserAvatar,updateUsercoverImage,getUserChannelProfile}
+const getUserWatchHistory=asyncHandler(async(req,res)=>{
+    const user=await User.aggregate([
+        {
+        $match:{
+            _id:new mongoose.Types.ObjectId(req.user._id)
+        }
+    },
+    {
+        $lookup:{
+            from:"videos",
+            localField:"watchHistory",
+            foreignField:"_id",
+            as:"watchHistory",
+            pipeline:[
+                {
+                    $lookup:{
+                        from:"users",
+                        localField:"owner",
+                        foreignField:"_id",
+                        as:"owner",
+                        pipeline:[
+                            {
+                            $project:{
+                             fullname:1,
+                             usernmae:1,
+                             avatar:1
+                            }
+                        }
+                        ]
+                    }
+                },
+                {
+                    $addFields:{
+                        owner:{
+                            $first:"$owner"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+    ])
+return res
+.status(200)
+.json(
+    new ApiResponse(
+        200,
+        user[0].watchHistory,
+        "Watch History fetched successfuully"
+    )
+)
+})
+export {registerUser,loginUser,logOutUser,refreshAccessToken,changeCurrentPassword,updateAccountDetails,getCurrentUser,updateUserAvatar,updateUsercoverImage,getUserChannelProfile,getUserWatchHistory}
