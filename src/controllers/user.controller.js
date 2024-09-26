@@ -84,7 +84,7 @@ const loginUser=asyncHandler(async(req,res)=>{
     console.log(username)
     if(!email && !username)
     {
-        throw new ApiError(400,"USername or password is required")
+        throw new ApiError(400,"USername or email is required")
     }
     const user=await User.findOne(
         {
@@ -119,7 +119,7 @@ const logOutUser=asyncHandler(async(req,res)=>{
         req.user._id,
         {
             $set:{
-                refreshToken:undefined
+                refreshToken:null
             }
         },
         {
@@ -185,11 +185,11 @@ const getCurrentUser=asyncHandler(async(req,res)=>{
 })
 const updateAccountDetails=asyncHandler(async(req,res)=>{
     const {fullname,email}=req.body
-    if(!fullname || !email)
+    if(!fullname || !email)//Changed needed username to fullname
     {
         throw new ApiError(400,"All fields are required")
     }
-    const user=User.findByIdAndUpdate(
+    const user=await User.findByIdAndUpdate(
         req.user?._id,
         {
             $set:{
@@ -199,6 +199,7 @@ const updateAccountDetails=asyncHandler(async(req,res)=>{
         },
         {new:true}
     ).select("-password")
+    console.log(user)
     return res
     .status(200)
     .json(new ApiResponse(200,user,"Account Details Updated successfully"))
@@ -348,6 +349,8 @@ const getUserWatchHistory=asyncHandler(async(req,res)=>{
         }
     }
     ])
+    console.log("User:",req.user._id)
+    console.log("User Watch History:", user[0].watchHistory);
 return res
 .status(200)
 .json(
